@@ -1,4 +1,4 @@
 <?php
   require ('library.php');
-  getData('',readData())
+  filterData('New York','','',readData())
 ?>

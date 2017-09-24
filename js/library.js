@@ -9,8 +9,11 @@ $('#mostrarTodos').on('click', function(){
 })
 
 $('#formulario').on('submit', function(event){
-  //event.preventDefault();
-  //filterPrice();
+  event.preventDefault();
+  var minimo = $('.irs-from').text(), //Obtener el precio mínimo
+      maximo = $('.irs-to').text(), //Obtener el precio máximo
+      rango = getPrices(minimo, maximo);
+  filterPrice(rango);
 })
 
 function findAllItems(){
@@ -46,6 +49,8 @@ function findAllItems(){
   })
 }
 
+
+
 function getCities(){
   $.ajax({
     url:'./cities.php', //Realizar consulta al archivo cities.php
@@ -78,31 +83,24 @@ function getTipo(){
   })
 }
 
-function getPrices(){
-  //var rangoPrecios = slider.noUiSlider.get();
-
-  var rangoPrecios = { //Crear un objeto con el rango de precios
-    minimo: $('.irs-from').text(), //Obtener el precio mínimo
-    maximo: $('.irs-to').text() //Obtener el precio máximo
-  }
+function getPrices(maximo, minimo){
+  var rangoPrecios = []
+  rangoPrecios[0] = maximo
+  rangoPrecios[1] = minimo
   return rangoPrecios; //Debolver el objeto
 }
 
-function filterPrice(){
-  var rango = getPrices(); //Obtener los valores maximos y minimos del rango a buscar
+function filterPrice(rango){
   $.ajax({
     url:'./buscador.php', //Realizar consulta al archivo tipo.php
     type: 'POST', //Utilizar el metodo GET para obtener la infomación
     //dataType: 'json', //Definir el tipo de información como un objeto json
-    cache: false,
-    contentType: false,
-    processData: false,
     data:{rango}, //Enviar la información con los rangos de precios.
     success:function(rango){
       alert(rango)
     },
     error: function(){
-      alert('Se ha producido un error')
+      alert('Error de Objeto: ' + rango[0])
     }
   })
 }

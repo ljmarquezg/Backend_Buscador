@@ -16,11 +16,29 @@ function getData($filter, $data){
       array_push($itemList, $item); //Agregar los valores obtenidos al vector items
     }
     echo json_encode($itemList); //Devolver el arreglo en formato JSON
-  }else{
-    echo'filtro seleccionado'; //Se ha seleccionado un filtro
   }
 };
 
+function filterData($filtroCiudad, $filtroTipo, $filtroPrecio, $data){
+  $itemList = Array();
+  if($filtroCiudad == "" and $filtroTipo=="" and $filtroPrecio==""){
+    foreach ($data as $index => $item) {
+      array_push($itemList, $item); //Agregar los valores obtenidos al vector items
+    }
+  }else{
+    if ($filtroCiudad != "" and $filtroTipo ==""){
+      foreach ($data as $index => $item) {
+        if ($index == 1){
+          array_push($itemList, $item); //Agregar los valores obtenidos al vector items
+        }
+      }
+    }
+  }
+  echo json_encode($itemList); //Devolver el arreglo en formato JSON
+};
+
+
+/*Inicializar los input select*/
 function getCities($getData){
   $getCities = Array(); //Crear una matriz para evitar repetir ciudades
   foreach ($getData as $cities => $city) { //Recorrer la información
@@ -45,19 +63,14 @@ function getTipo($getData){
   echo json_encode($getTipo);
 }
 
-function getPrices(){
-  $rango = $_POST['precio']; //Obtener el valor del campo precio
-  $precio = explode(";", $rango); //Convertir la cadena de caracteres en un objeto, separando su valor cada vez que se encuentre el caracter ";"
-  return $precio; //Convertir el objeto precio formato JSON
-}
 
+/*Funciones de filtros*/
 function filterPrice($data, $rango){
   $menor = $rango[0]; //Obtener el valor menor del rango de precios
   $mayor = $rango[1]; //Obtener el valor mayor del rango de precios
   $itemList = Array();
-
   foreach ($data as $items => $item) {
-    $precio = substr($item['Precio'], 1); //Eliminar el simbolo Dolar ($) del valor del item actual
+    $precio = $item['Precio'];
     if ( $precio >= $menor and $precio <= $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
       array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
     }
@@ -65,7 +78,7 @@ function filterPrice($data, $rango){
   echo json_encode($itemList);
 }
 
-function getCity($data){
+function filterCity($data){
   $cityMatch = $_POST['ciudad'];
   //echo $cityMatch;
   $cityList = Array();
