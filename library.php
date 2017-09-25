@@ -11,32 +11,11 @@ function readData(){
 
 function getData($filter, $data){
   $itemList = Array();
-  if(isset($filter)){
     foreach ($data as $index => $item) {
       array_push($itemList, $item); //Agregar los valores obtenidos al vector items
     }
     echo json_encode($itemList); //Devolver el arreglo en formato JSON
-  }
 };
-
-function filterData($filtroCiudad, $filtroTipo, $filtroPrecio, $data){
-  $itemList = Array();
-  if($filtroCiudad == "" and $filtroTipo=="" and $filtroPrecio==""){
-    foreach ($data as $index => $item) {
-      array_push($itemList, $item); //Agregar los valores obtenidos al vector items
-    }
-  }else{
-    if ($filtroCiudad != "" and $filtroTipo ==""){
-      foreach ($data as $index => $item) {
-        if ($index == 1){
-          array_push($itemList, $item); //Agregar los valores obtenidos al vector items
-        }
-      }
-    }
-  }
-  echo json_encode($itemList); //Devolver el arreglo en formato JSON
-};
-
 
 /*Inicializar los input select*/
 function getCities($getData){
@@ -63,23 +42,124 @@ function getTipo($getData){
   echo json_encode($getTipo);
 }
 
+function filterData($filtroCiudad, $filtroTipo, $filtroPrecio,$data){
+  $itemList = Array();
 
+  if($filtroCiudad == "" and $filtroTipo=="" and $filtroPrecio==""){ //Si se presiona el boton mostrar todos
+    foreach ($data as $index => $item) {
+      array_push($itemList, $item); //Agregar los valores obtenidos al vector items
+    }
+  }else{ //Si se presiona el boton buscar. NOTA: El campo precio siempre tendra un valor.
+
+    $menor = $filtroPrecio[0]; //Obtener el valor menor del rango de precios
+    $mayor = $filtroPrecio[1]; //Obtener el valor mayor del rango de precios
+
+      if($filtroCiudad == "" and $filtroTipo == ""){ //Verificar que los filtros ciudad y tipo estén vacios
+        foreach ($data as $items => $item) {
+            $precio = $item['Precio'];
+        if ( $precio >= $menor and $precio <= $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
+            array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
+          }
+        }
+      }
+
+      if($filtroCiudad != "" and $filtroTipo == ""){ //Comparar si el precio se encuentra dentro de los valores del filtro
+          foreach ($data as $index => $item) {
+            $precio = $item['Precio'];
+            if ($filtroCiudad == $item['Ciudad'] and $precio > $menor and $precio < $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
+              array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
+            }
+        }
+      }
+
+      if($filtroCiudad == "" and $filtroTipo != ""){ //Comparar si el precio se encuentra dentro de los valores del filtro
+          foreach ($data as $index => $item) {
+            $precio = $item['Precio'];
+            if ($filtroTipo == $item['Tipo'] and $precio > $menor and $precio < $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
+              array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
+            }
+        }
+      }
+
+      if($filtroCiudad != "" and $filtroTipo != ""){ //Comparar si el precio se encuentra dentro de los valores del filtro
+          foreach ($data as $index => $item) {
+            $precio = $item['Precio'];
+            if ($filtroTipo == $item['Tipo'] and $filtroCiudad == $item['Ciudad'] and $precio > $menor and $precio < $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
+              array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
+            }
+        }
+      }
+
+
+  }
+  echo json_encode($itemList); //Devolver el arreglo en formato JSON
+};
+
+
+function findAllItems(){
+  $data = getData('', readData());
+  foreach ($data as $index => $item) {
+    array_push($itemList, $item); //Agregar los valores obtenidos al vector items
+  }
+}
+/*function filterPrice($data, $menor, $mayor, $itemList){
+
+  return $itemList; //Devolver el array itemList
+}*/
+/*
+function filterCity($data, $menor, $mayor, $itemList){
+  foreach ($data as $index => $item) {
+    $precio = $item['Precio'];
+    if ($filtroCiudad == $item['Ciudad'] and $precio > $menor and $precio < $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
+        array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
+      }
+  }
+  return $itemList; //Devolver el array itemList
+}
 /*Funciones de filtros*/
-function filterPrice($data, $rango){
+
+/*function filterPrice($data, $rango, $ciudad, $tipo){
   $menor = $rango[0]; //Obtener el valor menor del rango de precios
   $mayor = $rango[1]; //Obtener el valor mayor del rango de precios
+
+  echo "Ciudad:".$ciudad;
   $itemList = Array();
   foreach ($data as $items => $item) {
     $precio = $item['Precio'];
-    if ( $precio >= $menor and $precio <= $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
-      array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
+    if($ciudad == "" and $tipo == ""){
+      if ( $precio > $menor and $precio < $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
+        array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
+      }
+    }else{
+      if($ciudad != "" and $tipo == "" and $precio > $menor and $precio < $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
+        array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
+      }
     }
+
   }
   echo json_encode($itemList);
 }
+*/
+/*
+function filterPrice($data, $rango, $ciudad, $tipo){
+  $menor = $rango[0]; //Obtener el valor menor del rango de precios
+  $mayor = $rango[1]; //Obtener el valor mayor del rango de precios
+  $filtroCiudad = $ciudad;
+  $filtroTipo = $tipo;
 
-function filterCity($data){
-  $cityMatch = $_POST['ciudad'];
+  $itemList = Array();
+  foreach ($data as $items => $item) {
+    $precio = $item['Precio'];
+    if ( $precio > $menor and $precio < $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
+      //array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
+      echo $filtroCiudad;
+    }
+  }
+  //echo json_encode($itemList);
+}
+*/
+/*function filterCity($data){
+  $cityMatch = $_GET['ciudad'];
   //echo $cityMatch;
   $cityList = Array();
   foreach ($data as $cities => $city) {
@@ -88,7 +168,7 @@ function filterCity($data){
     }
   }
   echo json_encode($cityList);
-}
+}*/
 
 
 ?>

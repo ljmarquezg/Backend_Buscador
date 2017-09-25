@@ -1,18 +1,8 @@
 <?php
   require('./library.php');
-  $getRango =  $_POST['rango'];
+  $filtroCiudad = $_GET['filtroCiudad'];
+  $filtroTipo = $_GET['filtroTipo'];
+  $filtroPrecio =  $_GET['filtroPrecio'];
   $getData = readData(); //Leer la informacion del archivo json.
-
-  if(isset($_POST['city'])){
-    echo $_POST['city'];
-    $getCity = filterCity($getData);
-    filterCity($getData, $getCity );
-  }
-
-  /*if(isset($_POST['ciudad'])){
-    echo $_POST['tipo'].'el filtro de tipo esta vacio';
-  }*/
-
-  filterPrice($getData, $getRango);
-  //getData('ciudad',readData())
+  filterData($filtroCiudad, $filtroTipo, $filtroPrecio,$getData);
  ?>
