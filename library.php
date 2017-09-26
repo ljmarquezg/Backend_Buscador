@@ -56,7 +56,7 @@ function filterData($filtroCiudad, $filtroTipo, $filtroPrecio,$data){
 
       if($filtroCiudad == "" and $filtroTipo == ""){ //Verificar que los filtros ciudad y tipo estén vacios
         foreach ($data as $items => $item) {
-            $precio = $item['Precio'];
+            $precio = precioNumero($item['Precio']);
         if ( $precio >= $menor and $precio <= $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
             array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
           }
@@ -65,7 +65,7 @@ function filterData($filtroCiudad, $filtroTipo, $filtroPrecio,$data){
 
       if($filtroCiudad != "" and $filtroTipo == ""){ //Comparar si el precio se encuentra dentro de los valores del filtro
           foreach ($data as $index => $item) {
-            $precio = $item['Precio'];
+            $precio = precioNumero($item['Precio']);
             if ($filtroCiudad == $item['Ciudad'] and $precio > $menor and $precio < $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
               array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
             }
@@ -74,7 +74,7 @@ function filterData($filtroCiudad, $filtroTipo, $filtroPrecio,$data){
 
       if($filtroCiudad == "" and $filtroTipo != ""){ //Comparar si el precio se encuentra dentro de los valores del filtro
           foreach ($data as $index => $item) {
-            $precio = $item['Precio'];
+            $precio = precioNumero($item['Precio']);
             if ($filtroTipo == $item['Tipo'] and $precio > $menor and $precio < $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
               array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
             }
@@ -83,7 +83,7 @@ function filterData($filtroCiudad, $filtroTipo, $filtroPrecio,$data){
 
       if($filtroCiudad != "" and $filtroTipo != ""){ //Comparar si el precio se encuentra dentro de los valores del filtro
           foreach ($data as $index => $item) {
-            $precio = $item['Precio'];
+            $precio = precioNumero($item['Precio']);
             if ($filtroTipo == $item['Tipo'] and $filtroCiudad == $item['Ciudad'] and $precio > $menor and $precio < $mayor){ //Comparar si el precio se encuentra dentro de los valores del filtro
               array_push($itemList,$item ); //Devolver el objeto cuyo precio se encuentra dentro del rango establecido.
             }
@@ -96,12 +96,17 @@ function filterData($filtroCiudad, $filtroTipo, $filtroPrecio,$data){
 };
 
 
-function findAllItems(){
+function precioNumero($itemPrecio){
+  $precio = str_replace('$','',$itemPrecio);
+  $precio = str_replace(',','',$precio);
+  return $precio;
+}
+/*function findAllItems(){
   $data = getData('', readData());
   foreach ($data as $index => $item) {
     array_push($itemList, $item); //Agregar los valores obtenidos al vector items
   }
-}
+}*/
 /*function filterPrice($data, $menor, $mayor, $itemList){
 
   return $itemList; //Devolver el array itemList
